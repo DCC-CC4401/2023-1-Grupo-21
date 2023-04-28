@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+
+    </title>
+</head>
+<h1>hola mundo</h1>
+<body>
+<table class="default">
+
+    <tr>
+
+        <th>Fecha</th>
+
+        <th>Nombre Movimiento</th>
+
+        <th>Categoría</th>
+
+        <th>Monto</th>
+
+    </tr>
+
+    {% for movimiento in movimientos %}
+        <tr>
+
+            <td>{{ movimiento.fecha }}</td>
+
+            <td> {{ movimiento.nombre_movimiento }} </td>
+
+            <td> {{ movimiento.categoria }}</td>
+
+            <td> {{ movimiento.monto }}</td>
+
+        </tr>
+    {% endfor %}
+</table>
+</body>
+
+</html>
