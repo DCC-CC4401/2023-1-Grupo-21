@@ -1,40 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>
+{% extends "movimientos/base.html" %}
+{% block content %}
+    <h1>hola mundo</h1>
+    <table class="default">
 
-    </title>
-</head>
-<h1>hola mundo</h1>
-<body>
-<table class="default">
-
-    <tr>
-
-        <th>Fecha</th>
-
-        <th>Nombre Movimiento</th>
-
-        <th>Categoría</th>
-
-        <th>Monto</th>
-
-    </tr>
-
-    {% for movimiento in movimientos %}
         <tr>
 
-            <td>{{ movimiento.fecha }}</td>
+            <th>Fecha</th>
 
-            <td> {{ movimiento.nombre_movimiento }} </td>
+            <th>Nombre Movimiento</th>
 
-            <td> {{ movimiento.categoria }}</td>
+            <th>Categoría</th>
 
-            <td> {{ movimiento.monto }}</td>
+            <th>Monto</th>
 
         </tr>
-    {% endfor %}
-</table>
-</body>
 
-</html>
+        {% for movimiento in movimientos %}
+            <tr>
+
+                <td>{{ movimiento.fecha }}</td>
+
+                <td> {{ movimiento.nombre_movimiento }} </td>
+
+                <td> {{ movimiento.categoria }}</td>
+
+                <td> {{ movimiento.monto }}</td>
+
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock content %}
