@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
 from django.contrib.auth import logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 
 from .models import Movimientos
@@ -15,18 +16,19 @@ def home(request):
         suma_total = resultado['monto__sum']
         context = {
             'movimientos': tabla,
-            'saldo' : suma_total
+            'saldo': suma_total
         }
         return render(request, 'home.html', context)
     else:
         return HttpResponseRedirect('/login/login/')
 
+
 def logout_user(request):
-   logout(request)
-   return HttpResponseRedirect('/login/login/')
+    logout(request)
+    return HttpResponseRedirect('/login/login/')
 
 
-class MovimientosCreateView(CreateView):
+class MovimientosCreateView(LoginRequiredMixin, CreateView):
     model = Movimientos
     success_url = '/movimientos'
     fields = ['nombre_movimiento', 'monto', 'categoria', 'fecha']
@@ -34,3 +36,4 @@ class MovimientosCreateView(CreateView):
     def form_valid(self, form):
         form.instance.usuario = self.request.user
         return super().form_valid(form)
+
