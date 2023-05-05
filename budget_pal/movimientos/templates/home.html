@@ -1,9 +1,9 @@
 {% extends "movimientos/base.html" %}
 {% block content %}
-    <h1 class="text-center">Usuario</h1>
+    <h1 class="text-center">{{ user.username }}</h1>
     <div class="border saldo">
         <h1 class="text-center">Saldo</h1>
-        <h1 class="text-center">$$$$$</h1>
+        <h1 class="text-center">{{ saldo }} </h1>
     </div>
     <h5>Ultimos movimientos:</h5>
     <div class="table-responsive">
@@ -58,7 +58,7 @@
     </div>
     <div class="text-center">
         <div class="btn-group justify-content-center" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-outline-primary">ingresar nuevo movimiento</button>
+            <a href="{% url 'movimientos-crear' %}" class="btn btn-outline-primary">Ingresar nuevo movimiento</a>
             <button type="button" class="btn btn-outline-primary">filtrar movimiento</button>
         </div>
     </div>
