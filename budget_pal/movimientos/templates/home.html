@@ -12,13 +12,15 @@
                 <thead class="thead-light">
                     <tr style="width:1000px">
 
-                        <th style="width: 240px">Fecha</th>
+                        <th style="width: 192px">Fecha</th>
 
-                        <th style="width: 240px">Nombre Movimiento</th>
+                        <th style="width: 192px">Nombre Movimiento</th>
 
-                        <th style="width: 240px">Categoría</th>
+                        <th style="width: 192px">Categoría</th>
 
-                        <th style="width: 240px">Monto</th>
+                        <th style="width: 192px">Monto</th>
+
+                        <th style="width: 192px">Tipo</th>
 
                     </tr>
                 </thead>
@@ -26,13 +28,15 @@
                 {% for movimiento in movimientos %}
                     <tr style="width:1000px">
 
-                        <td style="width: 240px">{{ movimiento.fecha }}</td>
+                        <td style="width: 192px">{{ movimiento.fecha }}</td>
 
-                        <td style="width: 240px"> {{ movimiento.nombre_movimiento }} </td>
+                        <td style="width: 192px"> {{ movimiento.nombre_movimiento }} </td>
 
-                        <td style="width: 240px"> {{ movimiento.categoria }}</td>
+                        <td style="width: 192px"> {{ movimiento.categoria }}</td>
 
-                        <td style="width: 240px"> {{ movimiento.monto }}</td>
+                        <td style="width: 192px"> {{ movimiento.monto }}</td>
+
+                        <td style="width: 192px"> {{ movimiento.tipo }}</td>
 
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic">

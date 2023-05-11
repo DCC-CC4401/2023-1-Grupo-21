@@ -12,11 +12,31 @@ from .models import Movimientos
 def home(request):
     if request.user.is_authenticated:
         tabla = Movimientos.objects.filter(usuario=request.user)
+        nueva_tabla = []
+        for movimiento in tabla:
+            if (movimiento.monto >= 0):
+                nuevo_registro = {
+                    'nombre_movimiento': movimiento.nombre_movimiento,
+                    'categoria': movimiento.categoria,
+                    'fecha': movimiento.fecha,
+                    'usuario': movimiento.usuario,
+                    'monto': movimiento.monto,
+                    'tipo': 'Ingreso'
+                }
+            else:
+                nuevo_registro = {
+                    'nombre_movimiento': movimiento.nombre_movimiento,
+                    'categoria': movimiento.categoria,
+                    'fecha': movimiento.fecha,
+                    'monto': -movimiento.monto,
+                    'tipo': 'Egreso'
+                }
+            nueva_tabla.append(nuevo_registro)
         resultado = tabla.aggregate(Sum('monto'))
         suma_total = resultado['monto__sum']
         context = {
-            'movimientos': tabla,
-            'saldo': suma_total
+            'movimientos': nueva_tabla,
+            'saldo' : suma_total
         }
         return render(request, 'home.html', context)
     else:
