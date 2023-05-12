@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 
 from .models import Movimientos
-from ..budget_pal.settings import LOGIN_URL
+from django.conf import settings
 
 
 # Create your views here.
@@ -41,12 +41,12 @@ def home(request):
         }
         return render(request, 'home.html', context)
     else:
-        return HttpResponseRedirect(LOGIN_URL)
+        return HttpResponseRedirect(settings.LOGIN_URL)
 
 
 def logout_user(request):
     logout(request)
-    return HttpResponseRedirect(LOGIN_URL)
+    return HttpResponseRedirect(settings.LOGIN_URL)
 
 
 # Clase view para la pestaña de ingresar movimientos
