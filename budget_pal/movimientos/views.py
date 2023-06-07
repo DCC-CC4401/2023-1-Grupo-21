@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 from django.http import HttpResponseRedirect
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
+from django.shortcuts import get_object_or_404
+from django.template import RequestContext
 
 from .models import Movimientos
 from django.conf import settings
@@ -15,37 +17,23 @@ def home(request):
     # si el usuario fue autentificado, se procede a la pagina principal
     if request.user.is_authenticated:
         # se filtran los datos que pertenecen al usuario desde la base de datos
-        tabla = Movimientos.objects.filter(usuario=request.user)
-        # se crea la tabla que se va a mostrar en el html
-        nueva_tabla = []
-        # por cada movimiento de la tabla, se crea su equivalente en la nueva tabla que se va a mostrar en el 
-        # html, manteniendo nombre_movimiento, categoria y fecha, agregando un tipo segun el monto (egreso si 
-        # es negativo, ingreso de caso contrario) y colocando el monto como valor absoluto
-        for movimiento in tabla:
-            if (movimiento.monto >= 0):
-                nuevo_registro = {
-                    'nombre_movimiento': movimiento.nombre_movimiento,
-                    'categoria': movimiento.categoria,
-                    'fecha': movimiento.fecha,
-                    'monto': movimiento.monto,
-                    'tipo': 'Ingreso'
-                }
-            else:
-                nuevo_registro = {
-                    'nombre_movimiento': movimiento.nombre_movimiento,
-                    'categoria': movimiento.categoria,
-                    'fecha': movimiento.fecha,
-                    'monto': -movimiento.monto,
-                    'tipo': 'Egreso'
-                }
-            nueva_tabla.append(nuevo_registro)
-        # calculo la suma de todos los montos de la tabla original (para mostrar el saldo disponible)
-        resultado = tabla.aggregate(Sum('monto'))
-        suma_total = resultado['monto__sum']
+        movimientos = Movimientos.objects.filter(usuario=request.user)
+        ingresos = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.INGRESO).aggregate(Sum('monto'))
+        egresos = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.EGRESO).aggregate(Sum('monto'))
+        monto_egresos = egresos['monto__sum']
+        monto_ingresos = ingresos['monto__sum']
+
+        if monto_egresos == None:
+            monto_egresos = 0
+        if monto_ingresos == None:
+            monto_ingresos = 0
+        
+        monto_total = monto_ingresos - monto_egresos
+
         # el saldo y los movimientos del usuario (de la nueva tabla) los pongo en el contexto para visualizarse
         context = {
-            'movimientos': nueva_tabla,
-            'saldo' : suma_total
+            'movimientos': movimientos,
+            'saldo' : monto_total
         }
         return render(request, 'home.html', context)
     else:
@@ -63,9 +51,13 @@ def logout_user(request):
 class MovimientosCreateView(LoginRequiredMixin, CreateView):
     model = Movimientos
     success_url = '/movimientos'
-    fields = ['nombre_movimiento', 'monto', 'categoria', 'fecha']
+    fields = ['nombre_movimiento', 'tipo', 'monto', 'categoria', 'fecha']
 
     def form_valid(self, form):
         form.instance.usuario = self.request.user
         return super().form_valid(form)
 
+def delete_movimiento(request, id):
+    movimiento = Movimientos.objects.get(id=id)  
+    movimiento.delete()         
+    return redirect('/movimientos')
