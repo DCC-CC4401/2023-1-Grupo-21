@@ -8,4 +8,6 @@ urlpatterns = [
     path('crear/', MovimientosCreateView.as_view(), name='movimientos-crear'),
     path('logout',views.logout_user, name='logout'),
     path('delete/<int:id>/', views.delete_movimiento, name='delete-movimiento'),
+    path('filtro/', views.filtro, name='movimientos-filtro'),
+    path('filtrar/', views.filtrar, name='filtrar')
 ]

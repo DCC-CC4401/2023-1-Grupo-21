@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
+from django.http import JsonResponse
 
 from .models import Movimientos
 from django.conf import settings
@@ -61,3 +62,35 @@ def delete_movimiento(request, id):
     movimiento = Movimientos.objects.get(id=id)  
     movimiento.delete()         
     return redirect('/movimientos')
+
+def filtro(request):
+    # si el usuario fue autentificado, se procede a la pagina principal
+    if request.user.is_authenticated:
+        # se filtran los datos que pertenecen al usuario desde la base de datos
+        movimientos = Movimientos.objects.filter(usuario=request.user)
+
+        # el saldo y los movimientos del usuario (de la nueva tabla) los pongo en el contexto para visualizarse
+        context = {
+            'movimientos': movimientos,
+        }
+        return render(request, 'movimientos/filtros.html', context)
+    else:
+        # si el usuario no esta autentificado, se manda al login para que ingrese su usuario
+        return HttpResponseRedirect(settings.LOGIN_URL)
+    
+def filtrar(request):
+    filtro_tipo = request.POST.get('Tipo')
+    filtro_categoria = request.POST.get('Categoria')
+    filtro_fecha_inicial = request.POST.get('Fecha_inicial')
+    filtro_fecha_final = request.POST.get('Fecha_final')
+
+    # se filtran los datos que pertenecen al usuario desde la base de datos
+    movimientos = Movimientos.objects.filter(usuario=request.user, categoria__icontains=filtro_categoria)
+
+    # el saldo y los movimientos del usuario (de la nueva tabla) los pongo en el contexto para visualizarse
+    context = {
+        'movimientos': movimientos,
+    }
+    return render(request, 'movimientos/tabla.html', context)
+    #return JsonResponse({'tabla_html': tabla_html})
+
