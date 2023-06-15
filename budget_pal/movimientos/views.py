@@ -61,6 +61,7 @@ class MovimientosCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+# Clase view para la pestaña de updatear movimientos
 class MovimientosUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Movimientos
     success_url = '/movimientos'
