@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -76,10 +76,13 @@ class MovimientosUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
         return self.request.user.id == movimiento.usuario_id
 
 
-def delete_movimiento(request, id):
-    movimiento = Movimientos.objects.get(id=id)
-    movimiento.delete()
-    return redirect('/movimientos')
+class MovimientosDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Movimientos
+    success_url = '/movimientos'
+
+    def test_func(self):
+        movimiento = self.get_object()
+        return self.request.user.id == movimiento.usuario_id
 
 
 def filtro(request):
