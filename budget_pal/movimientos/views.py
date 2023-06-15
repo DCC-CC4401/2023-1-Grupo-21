@@ -115,4 +115,4 @@ def filtrar(request):
         'movimientos': movimientos,
     }
     return render(request, 'movimientos/tabla.html', context)
-    # return JsonResponse({'tabla_html': tabla_html})
+    #return JsonResponse({'tabla_html': tabla_html})
