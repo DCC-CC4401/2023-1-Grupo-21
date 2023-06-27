@@ -15,7 +15,7 @@ def register_user(request):
         form = NuevoRegistro(request.POST)
         if form.is_valid(): # si los valores ingresados son validos 
             form.save() # guarda en base de datos
-            return redirect('/login/login') # redirige a la página de login después de crear una cuenta
+            return redirect('/login/') # redirige a la página de login después de crear una cuenta
     else:
         form = NuevoRegistro()
     return render(request, 'login/register_user.html', {'form': form}) # template de registro
