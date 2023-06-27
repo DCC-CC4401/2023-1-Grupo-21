@@ -9,6 +9,5 @@ urlpatterns = [
     path('update/<int:pk>/', MovimientosUpdateView.as_view(), name='movimientos-update'),
     path('logout', views.logout_user, name='logout'),
     path('delete/<int:pk>/', MovimientosDeleteView.as_view(), name='movimientos-delete'),
-    path('filtro/', views.filtro, name='movimientos-filtro'),
-    path('filtrar/', views.filtrar, name='filtrar')
+    path('filtro/', views.filtro, name='movimientos-filtro')
 ]
