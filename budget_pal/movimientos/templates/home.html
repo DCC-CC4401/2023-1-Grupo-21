@@ -60,7 +60,7 @@
                         </a>
                     </th>
             
-                    <th style="width: 192px">
+                    <th style="width: 170px">
                         Tipo
                         <a href="{% url 'movimientos-home' %}?sort=tipo">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -85,9 +85,9 @@
             
                         <td style="width: 192px"> {{ movimiento.monto }}</td>
             
-                        <td style="width: 192px"> {{ movimiento.tipo }}</td>
+                        <td style="width: 170px"> {{ movimiento.tipo }}</td>
             
-                        <td style="width: 100px">
+                        <td style="width: 120px">
                             <div class="btn-group" role="group" aria-label="Basic">
                                 <button type="button" class="btn btn-secondary" data-toggle="modal"
                                         data-target="#confirm-delete-modal-{{ movimiento.pk }}">
