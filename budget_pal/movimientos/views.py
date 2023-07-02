@@ -50,8 +50,9 @@ def home(request):
         if sort:
             movimientos = movimientos.order_by(sort)
 
-        ingresos_por_mes = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.INGRESO).annotate(mes=ExtractMonth('fecha')).values('mes').annotate(total=Sum('monto'))
-        egresos_por_mes = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.EGRESO).annotate(mes=ExtractMonth('fecha')).values('mes').annotate(total=Sum('monto'))
+        fecha_actual = datetime.date.today()
+        ingresos_por_mes = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.INGRESO, fecha__year=fecha_actual.year).annotate(mes=ExtractMonth('fecha')).values('mes').annotate(total=Sum('monto'))
+        egresos_por_mes = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.EGRESO, fecha__year=fecha_actual.year).annotate(mes=ExtractMonth('fecha')).values('mes').annotate(total=Sum('monto'))
 
         meses = [datetime.date(1, i, 1).strftime('%B') for i in range(1, 13)]
 
@@ -79,7 +80,7 @@ def home(request):
      
         ax.set_xlabel('Meses')
         ax.set_ylabel('Monto')
-        ax.set_title('Ingresos y Egresos por Mes')
+        ax.set_title('Ingresos y Egresos por Mes (' + str(fecha_actual.year) + ')')
         ax.set_xticks(x)
         ax.set_xticklabels(meses,rotation=25)        
         ax.legend()
