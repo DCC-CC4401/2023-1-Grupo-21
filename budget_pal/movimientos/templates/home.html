@@ -5,6 +5,50 @@
         <h3  class="font-weight-light">Tu saldo actual es: </h3>
         <h1 class="text-center">{{ saldo }} </h1>
     </div>
+    <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-secondary" id="mostrar-grafico">Mostrar gráfico</button>
+        </div>
+        <div id="contenedor-grafico" style="display: none;">
+            {% if grafico_base64 %}
+            <img src="data:image/png;base64,{{ grafico_base64 }}" alt="Gráfico de barras">
+            {% endif %}
+      	 </div>
+	 <script>
+            // Obtener referencias al botón y al contenedor del gráfico
+            var botonMostrarGrafico = document.getElementById('mostrar-grafico');
+            var contenedorGrafico = document.getElementById('contenedor-grafico');
+        
+            // Variable para controlar el estado del botón
+            var mostrarGrafico = true;
+        
+            // Función para cambiar el texto del botón
+            function cambiarTextoBoton() {
+                if (mostrarGrafico) {
+                    botonMostrarGrafico.textContent = 'Ocultar gráfico';
+                } else {
+                    botonMostrarGrafico.textContent = 'Mostrar gráfico';
+                }
+            }
+        
+            // Función para cambiar la visibilidad del contenedor del gráfico
+            function cambiarVisibilidadGrafico() {
+                if (mostrarGrafico) {
+                    contenedorGrafico.style.display = 'block';
+                } else {
+                    contenedorGrafico.style.display = 'none';
+                }
+            }
+        
+            // Agregar un evento de clic al botón
+            botonMostrarGrafico.addEventListener('click', function() {
+                // Cambiar el estado del botón
+                mostrarGrafico = !mostrarGrafico;
+        
+                // Cambiar el texto del botón y la visibilidad del gráfico
+                cambiarTextoBoton();
+                cambiarVisibilidadGrafico();
+            });
+        </script>
     <h5>Últimos movimientos:</h5>
     <div class="table-responsive">
         <div class="movimientos">

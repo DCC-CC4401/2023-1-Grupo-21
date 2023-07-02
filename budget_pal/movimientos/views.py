@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
@@ -8,7 +10,12 @@ from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.conf import settings
 import datetime
-
+from django.http import HttpResponse
+import matplotlib.pyplot as plt
+import numpy as np
+from io import BytesIO
+import base64
+from django.db.models.functions import ExtractMonth
 from .models import Movimientos
 from .models import Filtro
 from django.conf import settings
@@ -36,17 +43,60 @@ def home(request):
             monto_ingresos = 0
 
         monto_total = monto_ingresos - monto_egresos
-
+        
         # determina que sort se esta haciendo, si no se hace ninguno se devuelve None
         sort = request.GET.get('sort')
         # ordeno segun el sort que se selecciono
         if sort:
             movimientos = movimientos.order_by(sort)
 
-        # el saldo y los movimientos del usuario (de la nueva tabla) los pongo en el contexto para visualizarse
+        ingresos_por_mes = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.INGRESO).annotate(mes=ExtractMonth('fecha')).values('mes').annotate(total=Sum('monto'))
+        egresos_por_mes = Movimientos.objects.filter(usuario=request.user, tipo=Movimientos.TipoMovimiento.EGRESO).annotate(mes=ExtractMonth('fecha')).values('mes').annotate(total=Sum('monto'))
+
+        meses = [datetime.date(1, i, 1).strftime('%B') for i in range(1, 13)]
+
+        # Crear listas separadas para los ingresos y egresos
+        ingresos = [0] * len(meses)
+        egresos = [0] * len(meses)
+
+        # Asignar los montos a las listas correspondientes
+        for ingreso in ingresos_por_mes:
+            mes = ingreso['mes'] - 1  # Restar 1 porque los índices de la lista comienzan desde 0
+            ingresos[mes] = ingreso['total']
+
+        for egreso in egresos_por_mes:
+            mes = egreso['mes'] - 1
+            egresos[mes] = egreso['total']
+
+        # Crear el gráfico de barras dobles
+        x = np.arange(len(meses))
+        width = 0.35
+
+        fig, ax = plt.subplots()
+        fig.set_size_inches(11, 5)
+        ax.bar(x - width/2, ingresos, width, label='Ingresos')
+        ax.bar(x + width/2, egresos, width, label='Egresos')
+     
+        ax.set_xlabel('Meses')
+        ax.set_ylabel('Monto')
+        ax.set_title('Ingresos y Egresos por Mes')
+        ax.set_xticks(x)
+        ax.set_xticklabels(meses,rotation=25)        
+        ax.legend()
+
+        # Guardar el gráfico en una variable BytesIO
+        grafico_bytes = BytesIO()
+        plt.savefig(grafico_bytes, format='png')
+        plt.close()
+
+        # Convertir los bytes a una cadena base64 para pasarla al contexto del template
+        grafico_base64 = base64.b64encode(grafico_bytes.getvalue()).decode('utf-8')
+
+        # el saldo, el grafico y los movimientos del usuario (de la nueva tabla) los pongo en el contexto para visualizarse
         context = {
             'movimientos': movimientos,
-            'saldo': monto_total
+            'saldo': monto_total,
+            'grafico_base64': grafico_base64,  
         }
         return render(request, 'home.html', context)
     else:
