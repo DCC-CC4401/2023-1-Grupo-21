@@ -25,6 +25,7 @@ from django.conf import settings
 # Pagina principal
 def home(request):
     # si el usuario fue autentificado, se procede a la pagina principal
+    url_movimientos = "movimientos-home"
     if request.user.is_authenticated:
         # se filtran los datos que pertenecen al usuario desde la base de datos
         movimientos = Movimientos.objects.filter(usuario=request.user)
@@ -43,7 +44,7 @@ def home(request):
             monto_ingresos = 0
 
         monto_total = monto_ingresos - monto_egresos
-        
+
         # determina que sort se esta haciendo, si no se hace ninguno se devuelve None
         sort = request.GET.get('sort')
         # ordeno segun el sort que se selecciono
@@ -77,12 +78,12 @@ def home(request):
         fig.set_size_inches(11, 5)
         ax.bar(x - width/2, ingresos, width, label='Ingresos')
         ax.bar(x + width/2, egresos, width, label='Egresos')
-     
+
         ax.set_xlabel('Meses')
         ax.set_ylabel('Monto')
         ax.set_title('Ingresos y Egresos por Mes (' + str(fecha_actual.year) + ')')
         ax.set_xticks(x)
-        ax.set_xticklabels(meses,rotation=25)        
+        ax.set_xticklabels(meses,rotation=25)
         ax.legend()
 
         # Guardar el gráfico en una variable BytesIO
@@ -97,7 +98,8 @@ def home(request):
         context = {
             'movimientos': movimientos,
             'saldo': monto_total,
-            'grafico_base64': grafico_base64,  
+            'url_movimientos': url_movimientos,
+            'grafico_base64': grafico_base64,
         }
         return render(request, 'home.html', context)
     else:
@@ -148,6 +150,7 @@ class MovimientosDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 
 def filtro(request):
     # si el usuario fue autentificado, se procede a la pagina principal
+    url_movimientos = "movimientos-filtro"
     if request.user.is_authenticated:
         # se filtran los datos que pertenecen al usuario desde la base de datos
         movimientos = Movimientos.objects.filter(usuario=request.user)
@@ -204,6 +207,7 @@ def filtro(request):
         # el saldo y los movimientos del usuario (de la nueva tabla) los pongo en el contexto para visualizarse
         context = {
             'movimientos': movimientos,
+            'url_movimientos': url_movimientos
         }
         return render(request, 'movimientos/filtros.html', context)
     else:

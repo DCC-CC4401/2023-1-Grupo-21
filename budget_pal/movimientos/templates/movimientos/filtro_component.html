@@ -1,0 +1,38 @@
+<div class="border">
+    <form method="GET" action="{% url 'movimientos-filtro' %}">
+        <div class="form-row align-items-center row justify-content-center">
+            <div class="col-auto my-1 row justify-content-center" style="width: 200px">
+                <label class="text-center">Tipo</label>
+                <select class="custom-select mr-sm-2" name="Tipo">
+                    <option selected></option>
+                    <option value="Ingreso">Ingreso</option>
+                    <option value="Egreso">Egreso</option>
+                </select>
+            </div>
+            <div class="custom-control custom-checkbox mr-sm-2">
+                <div class="col-auto my-1 row justify-content-center" style="width: 200px">
+                    <label class="text-center">Categoria</label>
+                    <input type="text" class="form-control" name="Categoria" placeholder="Cuentas">
+                </div>
+            </div>
+            <div class="custom-control custom-checkbox mr-sm-2">
+                <div class="col-auto my-1 row justify-content-center" style="width: 200px">
+                    <label class="text-center">Fecha inicial</label>
+                    <input type="datetime-local" class="form-control" name="Fecha_inicial">
+                </div>
+            </div>
+            <div class="custom-control custom-checkbox mr-sm-2" style="width: 200px">
+                <div class="col-auto my-1 row justify-content-center">
+                    <label class="text-center">Fecha final</label>
+                    <input type="datetime-local" class="form-control" name="Fecha_final">
+                </div>
+            </div>
+        </div>
+        <div class="col-auto my-1 row justify-content-center">
+            <div class="btn-group justify-content-center" role="group" aria-label="Basic example">
+                <button type="submit" class="btn btn-outline-primary" name="filtro">Filtrar</button>
+                <button type="submit" class="btn btn-outline-primary" name="reiniciar">Reiniciar</button>
+            </div>
+        </div>
+    </form>
+</div>

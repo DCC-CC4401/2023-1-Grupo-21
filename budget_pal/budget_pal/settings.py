@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'movimientos',
     'crispy_forms',
     'crispy_bootstrap4',
-
 ]
 
 MIDDLEWARE = [
